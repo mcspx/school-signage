@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">School Signage</string>
+    <string name="text_date">0000&#8211;00&#8211;00</string>
+    <string name="text_time">00</string>
+    <string name="text_days">SUNDAY</string>
+    <string name="text_uid">UID</string>
+    <string name="text_config">Configuration</string>
+    <string name="text_url">Service URL :</string>
+    <string name="text_website">Website :</string>
+    <string name="text_server">API Server :</string>
+    <string name="text_save">SAVE</string>
+</resources>
