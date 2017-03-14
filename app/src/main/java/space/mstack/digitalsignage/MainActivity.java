@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -45,9 +46,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private SurfaceHolder mSurfaceHolder;
     private boolean cameraCondition = false;
 
-    //private TextView textView_time1;
-    //private TextView textView_time2;
-    //private TextView textView_time3;
     private TextView textView_date;
     private TextView textView_days;
     private EditText editText_uid;
@@ -61,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
     private String studentID = "0000000000";
     private int vdoCount = 0;
-    private int showTime = 0;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -131,7 +128,23 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
                         editText_uid.setText("");
 
-                        showTime = 0;
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                vdoView1.setVisibility(View.VISIBLE);
+                                webView1.setVisibility(View.GONE);
+
+                                webView1.clearView();
+                                webView1.clearHistory();
+                                webView1.loadUrl("about:blank");
+                                webView1.setWebViewClient (new WebViewClient());
+                                //webView1.clearCache(true);
+                                //webView1.destroy();
+
+                                vdoView1.setZOrderOnTop(true);
+                                vdoView1.start();
+                            }
+                        }, 4000);
                     }
 
                     return true;
@@ -147,39 +160,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 if (!hasFocus) {
                     editText_uid.requestFocus();
                 }
-            }
-        });
-
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Calendar calendar = Calendar.getInstance();
-                String timeString = timeFormat.format(calendar.getTime());
-                String[] splitTime = timeString.split(":");
-
-                textView_date.setText(splitTime[0]);
-                textView_days.setText(splitTime[4]);
-
-                if (showTime >= 5) {
-                    vdoView1.setVisibility(View.VISIBLE);
-                    webView1.setVisibility(View.GONE);
-
-                    webView1.clearView();
-                    webView1.clearHistory();
-                    webView1.loadUrl("about:blank");
-                    webView1.setWebViewClient (new WebViewClient());
-                    //webView1.clearCache(true);
-                    //webView1.destroy();
-
-                    vdoView1.setZOrderOnTop(true);
-                    vdoView1.start();
-
-                    showTime = 0;
-                }
-
-                showTime++;
-
-                mHandler.postDelayed(this, 1000); // set time to refresh
             }
         });
 
@@ -256,6 +236,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Calendar calendar = Calendar.getInstance();
+        String timeString = timeFormat.format(calendar.getTime());
+        String[] splitTime = timeString.split(":");
+
+        textView_date.setText(splitTime[0]);
+        textView_days.setText(splitTime[4]);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
@@ -347,11 +334,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
 
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat fileFormat = new SimpleDateFormat("yyyyMMddHHmm");
+            SimpleDateFormat fileFormat = new SimpleDateFormat("yyyyMMddHHmm", Locale.US);
             String timeString = fileFormat.format(calendar.getTime());
             String fileName = studentID + "-" + timeString + ".jpg";
 
-            SaveImageTask saveImageTask = new SaveImageTask(fileName, studentID);
+            SaveImageTask saveImageTask = new SaveImageTask(MainActivity.this, fileName, studentID);
 
             try {
                 saveImageTask.execute(data);

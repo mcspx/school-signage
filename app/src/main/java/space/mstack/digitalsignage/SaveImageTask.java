@@ -1,5 +1,7 @@
 package space.mstack.digitalsignage;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -16,12 +18,26 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SaveImageTask extends AsyncTask<byte[], Void, Void> {
+    private ProgressDialog mDialog;
+    private Context mContext;
     private String fileName;
     private String cardName;
 
-    public SaveImageTask(String filename, String cardname) {
+    public SaveImageTask(Context context, String filename, String cardname) {
+        mContext = context;
         fileName = filename;
         cardName = cardname;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+
+        mDialog = new ProgressDialog(mContext);
+        mDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mDialog.setCancelable(false);
+        mDialog.setMessage("กำลังบันทึกข้อมูล ...");
+        mDialog.show();
     }
 
     @Override
@@ -60,6 +76,13 @@ public class SaveImageTask extends AsyncTask<byte[], Void, Void> {
         } catch (IOException e) {
             return null;
         }
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+
+        mDialog.dismiss();
     }
 
     @NonNull
