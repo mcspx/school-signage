@@ -113,8 +113,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         studentID = editText_uid.getText().toString();
 
                         if (mCamera != null) {
-                            mCamera.takePicture(null, null, mJpegCallback);
-                            //mCamera.release();
+                            try {
+                                mCamera.takePicture(null, null, mJpegCallback);
+                                //mCamera.release();
+                            } catch (RuntimeException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         webView1.clearView();
