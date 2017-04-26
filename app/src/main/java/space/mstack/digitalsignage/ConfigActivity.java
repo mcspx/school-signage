@@ -32,9 +32,7 @@ public class ConfigActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setConfigurations();
 
-                Intent intent = new Intent(ConfigActivity.this, MainActivity.class);
-
-                startActivity(intent);
+                finish();
             }
         });
     }

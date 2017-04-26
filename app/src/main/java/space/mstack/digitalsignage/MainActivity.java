@@ -7,7 +7,6 @@ import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -38,16 +37,13 @@ import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
     private List<String> vdoList = new ArrayList<String>();
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss:EEEE");
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd:HH:mm:ss:EEEE", Locale.US);
     private Handler mHandler = new Handler();
 
     private Camera mCamera;
-    private SurfaceView mSurfaceViewer;
     private SurfaceHolder mSurfaceHolder;
     private boolean cameraCondition = false;
 
-    private TextView textView_date;
-    private TextView textView_days;
     private EditText editText_uid;
 
     private WebView webView0;
@@ -69,10 +65,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         setContentView(R.layout.activity_main);
 
-        mSurfaceViewer = (SurfaceView) findViewById(R.id.surfaceView);
+        SurfaceView mSurfaceViewer = (SurfaceView) findViewById(R.id.surfaceView);
 
-        textView_date = (TextView) findViewById(R.id.textView_date);
-        textView_days = (TextView) findViewById(R.id.textView_days);
+        TextView textView_date = (TextView) findViewById(R.id.textView_date);
+        TextView textView_days = (TextView) findViewById(R.id.textView_days);
 
         editText_uid = (EditText) findViewById(R.id.editText_uid);
 
@@ -135,18 +131,22 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                vdoView1.setVisibility(View.VISIBLE);
-                                webView1.setVisibility(View.GONE);
+                                try {
+                                    vdoView1.setVisibility(View.VISIBLE);
+                                    webView1.setVisibility(View.GONE);
 
-                                webView1.clearView();
-                                webView1.clearHistory();
-                                webView1.loadUrl("about:blank");
-                                webView1.setWebViewClient (new WebViewClient());
-                                //webView1.clearCache(true);
-                                //webView1.destroy();
+                                    webView1.clearView();
+                                    webView1.clearHistory();
+                                    webView1.loadUrl("about:blank");
+                                    webView1.setWebViewClient(new WebViewClient());
+                                    //webView1.clearCache(true);
+                                    //webView1.destroy();
 
-                                vdoView1.setZOrderOnTop(true);
-                                vdoView1.start();
+                                    vdoView1.setZOrderOnTop(true);
+                                    vdoView1.start();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }, 4000);
                     }
@@ -259,6 +259,13 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        //mHandler.removeCallbacks(runnable);
+    }
+
+    @Override
     public void surfaceCreated(SurfaceHolder holder) {
         if (isDeviceSupportCamera()) {
             try {
@@ -307,9 +314,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /*
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        /*
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 // close the app
@@ -317,8 +324,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 finish();
             }
         }
-        */
     }
+    */
 
     Camera.PictureCallback mJpegCallback = new Camera.PictureCallback() {
         @Override
@@ -351,6 +358,32 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         }
     };
+
+    /*
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                vdoView1.setVisibility(View.VISIBLE);
+                webView1.setVisibility(View.GONE);
+
+                webView1.clearView();
+                webView1.clearHistory();
+                webView1.loadUrl("about:blank");
+                webView1.setWebViewClient (new WebViewClient());
+                //webView1.clearCache(true);
+                //webView1.destroy();
+
+                vdoView1.setZOrderOnTop(true);
+                vdoView1.start();
+
+                mHandler.postDelayed(this, 4000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    */
 
     private boolean isDeviceSupportCamera() {
         return (Camera.getNumberOfCameras() > 0);

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:baselineAligned="true"
     tools:context="space.mstack.digitalsignage.ConfigActivity">
 
     <LinearLayout
@@ -67,6 +68,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="15dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -74,8 +76,9 @@
             android:id="@+id/button_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/text_save" />
+            android:text="@string/text_save"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorCyan"/>
     </LinearLayout>
 
 </LinearLayout>
